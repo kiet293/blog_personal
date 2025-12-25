@@ -1,9 +1,25 @@
 package com.example.blog.model;
 
+import jakarta.persistence.*;
+import com.example.blog.model.User;
+
+@Entity
+@Table(name = "posts")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
+
+    @Column(length = 5000) // Giới hạn độ dài nội dung 5000 ký tự
     private String content;
+
+    @Column(name = "publish_date")
     private String date;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id") // Khóa ngoại liên kết đến bảng users
+    private User author;
 
     public Post() {
 
@@ -17,6 +33,9 @@ public class Post {
     }
 
     // Getter (Bắt buộc để HTML đọc được)
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -25,4 +44,7 @@ public class Post {
 
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
+
+    public User getAuthor() { return author; }
+    public void setAuthor(User author) { this.author = author; }
 }
