@@ -1,6 +1,7 @@
 package com.example.blog.service;
 
 import com.example.blog.model.Post;
+import com.example.blog.model.User;
 import com.example.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,9 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    // Hàm lấy bài viết theo tác giả
+    public List<Post> getPostsByAuthor(User author) {
+        return postRepository.findByAuthor(author);
+    }
 
 }
