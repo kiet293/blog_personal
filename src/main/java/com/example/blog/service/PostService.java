@@ -4,6 +4,7 @@ import com.example.blog.model.Post;
 import com.example.blog.model.User;
 import com.example.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -23,7 +24,7 @@ public class PostService {
 
     // Lấy tất cả bài viết
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     // Hàm xóa bài viết theo ID
@@ -34,6 +35,11 @@ public class PostService {
     // Hàm lấy bài viết theo tác giả
     public List<Post> getPostsByAuthor(User author) {
         return postRepository.findByAuthor(author);
+    }
+
+    // Hàm lấy bài viết theo ID
+    public Post getPostById(Long id) {
+        return postRepository.findById(id).orElse(null);
     }
 
 }

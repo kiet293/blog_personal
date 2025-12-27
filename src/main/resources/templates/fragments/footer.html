@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
-<footer th:fragment="footer" class="bg-dark text-white text-center py-4 mt-auto">
-  <div class="container">
-    <div class="mb-3">
-      <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
-      <a href="#" class="text-white me-3"><i class="fab fa-github fa-lg"></i></a>
-      <a href="#" class="text-white"><i class="fab fa-linkedin fa-lg"></i></a>
+<footer th:fragment="footer" class="mt-auto py-4 border-top border-secondary border-opacity-25"
+        style="background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);">
+  <div class="container text-center">
+    <p class="mb-2 text-white-50">
+      &copy; 2025 <strong class="text-info">GK Social</strong>. Built with <i class="fas fa-heart text-danger"></i> & Spring Boot.
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="#" class="text-secondary hover-neon"><i class="fab fa-github fa-lg"></i></a>
+      <a href="#" class="text-secondary hover-neon"><i class="fab fa-facebook fa-lg"></i></a>
+      <a href="#" class="text-secondary hover-neon"><i class="fab fa-linkedin fa-lg"></i></a>
     </div>
-    <p class="mb-0 small opacity-75">&copy; 2025 Designed by Gia Kiet using Spring Boot & Thymeleaf</p>
   </div>
 </footer>
-
-</body>
-</html>

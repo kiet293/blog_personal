@@ -17,6 +17,8 @@ public class Post {
     @Column(name = "publish_date")
     private String date;
 
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "user_id") // Khóa ngoại liên kết đến bảng users
     private User author;
@@ -47,4 +49,7 @@ public class Post {
 
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
+
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 }

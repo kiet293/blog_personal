@@ -1,0 +1,37 @@
+<div th:fragment="sidebar-right" class="sidebar-right">
+    <div class="d-flex align-items-center justify-content-between mb-4" th:if="${#authorization.expression('isAuthenticated()')}">
+        <div class="d-flex align-items-center">
+            <img th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=38bdf8&color=fff'"
+                 class="rounded-circle me-3" width="50" height="50">
+            <div class="d-flex flex-column">
+                <span class="fw-bold text-white" sec:authentication="name">Username</span>
+                <span class="text-muted small">Your Name</span>
+            </div>
+        </div>
+        <a href="#" class="text-info small fw-bold text-decoration-none">Chuyển</a>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+        <span class="text-muted fw-bold small">Gợi ý cho bạn</span>
+        <a href="#" class="text-white small text-decoration-none">Xem tất cả</a>
+    </div>
+
+    <div class="suggestion-item" th:each="i : ${#numbers.sequence(1, 5)}">
+        <div class="d-flex align-items-center">
+            <img th:src="'https://ui-avatars.com/api/?name=User+' + ${i} + '&background=random&size=32'"
+                 class="rounded-circle me-3">
+            <div class="d-flex flex-column">
+                <span class="fw-bold text-white small">user_gợi_ý_[[${i}]]</span>
+                <span class="text-muted" style="font-size: 0.7rem;">Gợi ý cho bạn</span>
+            </div>
+        </div>
+        <a href="#" class="text-info small fw-bold text-decoration-none hover-opacity-75">Theo dõi</a>
+    </div>
+
+    <div class="mt-4">
+        <p class="text-muted" style="font-size: 0.7rem; line-height: 1.5;">
+            Giới thiệu • Trợ giúp • Báo chí • API • Việc làm • Quyền riêng tư
+        </p>
+        <p class="text-muted text-uppercase mt-3" style="font-size: 0.7rem;">© 2025 GK SOCIAL</p>
+    </div>
+</div>

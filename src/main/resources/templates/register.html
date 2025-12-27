@@ -1,77 +1,72 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
+    <title>Đăng ký | GK Social</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #4e54c8, #8f94fb);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
-        }
-        .form-floating > .form-control:focus ~ label { color: #4e54c8; }
-        .form-control:focus { border-color: #8f94fb; box-shadow: 0 0 0 0.25rem rgba(78, 84, 200, 0.25); }
-        .btn-gradient {
-            background: linear-gradient(to right, #4e54c8, #8f94fb);
-            border: none;
-            color: white;
-            font-weight: bold;
-        }
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
-            color: white;
-        }
+        /* CSS riêng cho thông báo lỗi */
+        .text-error { color: #ff6b6b; font-size: 0.85rem; margin-top: 5px; padding-left: 10px; }
+        .is-invalid { border-color: #ff6b6b !important; }
     </style>
 </head>
-<body>
+<body class="d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 20px;">
 
-<div class="glass-card animate__animated animate__fadeInUp">
+<div class="glass-panel p-5 shadow-lg" style="width: 100%; max-width: 500px;">
     <div class="text-center mb-4">
-        <h2 class="fw-bold text-dark">Tạo tài khoản</h2>
-        <p class="text-muted">Tham gia cộng đồng Developer ngay hôm nay</p>
+        <h2 class="fw-bold text-white">TẠO TÀI KHOẢN</h2>
+        <p class="text-white-50 small">Tham gia cộng đồng Developer ngay hôm nay</p>
     </div>
 
     <form th:action="@{/register}" th:object="${user}" method="post">
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" placeholder="Họ và tên" required>
-            <label for="fullName">Họ và tên hiển thị</label>
+
+        <div class="mb-3">
+            <label class="text-white-50 small mb-1 ps-2">Họ và Tên</label>
+            <input type="text" th:field="*{fullName}"
+                   class="form-control form-control-dark rounded-pill px-3"
+                   th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid' : ''"
+                   placeholder="Nguyễn Văn A">
+            <div class="text-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
         </div>
 
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Tên đăng nhập" required>
-            <label for="username">Tên đăng nhập (Username)</label>
+        <div class="mb-3">
+            <label class="text-white-50 small mb-1 ps-2">Email</label>
+            <input type="email" th:field="*{email}"
+                   class="form-control form-control-dark rounded-pill px-3"
+                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                   placeholder="email@example.com">
+            <div class="text-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
         </div>
 
-        <div class="form-floating mb-4">
-            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Mật khẩu" required>
-            <label for="password">Mật khẩu</label>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="text-white-50 small mb-1 ps-2">Tên đăng nhập</label>
+                <input type="text" th:field="*{username}"
+                       class="form-control form-control-dark rounded-pill px-3"
+                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">
+                <div class="text-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="text-white-50 small mb-1 ps-2">Mật khẩu</label>
+                <input type="password" th:field="*{password}"
+                       class="form-control form-control-dark rounded-pill px-3"
+                       th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                <div class="text-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-gradient w-100 py-3 rounded-pill mb-3">
-            Đăng Ký Ngay <i class="fas fa-arrow-right ms-2"></i>
+        <button type="submit" class="btn btn-neon w-100 py-2 rounded-pill fw-bold mt-3">
+            <i class="fas fa-user-plus me-2"></i>Đăng Ký
         </button>
-
-        <div class="text-center">
-            <small>Đã có tài khoản? <a href="/login" class="text-primary fw-bold text-decoration-none">Đăng nhập</a></small>
-        </div>
     </form>
+
+    <div class="text-center mt-4">
+        <a href="/login" class="text-white-50 small text-decoration-none hover-neon">
+            <i class="fas fa-arrow-left me-1"></i> Quay lại đăng nhập
+        </a>
+    </div>
 </div>
 
 </body>

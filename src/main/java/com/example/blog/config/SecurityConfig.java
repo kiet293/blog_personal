@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((request) -> request
                         // 1. Cho phép truy cập tự do vào các trang này:
-                        .requestMatchers("/", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
                         // 2. Tất cả các trang khác yêu cầu đăng nhập
                         .anyRequest().authenticated()
                 )
@@ -29,7 +29,7 @@ public class SecurityConfig {
                         )
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/") // Đăng xuất xong về trang chủ
+                        .logoutSuccessUrl("/login?logout") // Đăng xuất xong về trang chủ
                         .permitAll()); // Cho phép logout
         return http.build();
     }

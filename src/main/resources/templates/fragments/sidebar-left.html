@@ -1,0 +1,36 @@
+<div th:fragment="sidebar-left" class="sidebar-left" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <a href="/" class="mb-4 text-decoration-none px-3">
+        <h3 class="fw-bold text-white sidebar-brand" style="font-family: 'Outfit', sans-serif;">
+            GK Social
+        </h3>
+        <i class="fas fa-meteor text-info fs-2 sidebar-brand-icon" style="display:none;"></i>
+    </a>
+
+    <nav class="d-flex flex-column gap-2">
+        <a href="/" class="nav-item-custom fw-bold">
+            <i class="fas fa-home"></i> <span class="nav-label">Trang chủ</span>
+        </a>
+        <a href="#" class="nav-item-custom">
+            <i class="fas fa-search"></i> <span class="nav-label">Tìm kiếm</span>
+        </a>
+        <a href="#" class="nav-item-custom">
+            <i class="far fa-compass"></i> <span class="nav-label">Khám phá</span>
+        </a>
+        <a href="#" class="nav-item-custom" data-bs-toggle="modal" data-bs-target="#createPostModal">
+            <i class="far fa-plus-square"></i> <span class="nav-label">Tạo bài viết</span>
+        </a>
+
+        <a th:if="${#authorization.expression('isAuthenticated()')}"
+           th:href="@{/profile/{username}(username=${#authentication.name})}" class="nav-item-custom mt-3">
+            <img th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=38bdf8&color=fff'"
+                 class="rounded-circle me-3 border border-dark" width="30" height="30">
+            <span class="nav-label fw-bold" sec:authentication="name">User</span>
+        </a>
+
+        <form th:action="@{/logout}" method="post" class="mt-auto">
+            <button type="submit" class="nav-item-custom text-danger border-0 bg-transparent w-100 text-start">
+                <i class="fas fa-sign-out-alt"></i> <span class="nav-label">Đăng xuất</span>
+            </button>
+        </form>
+    </nav>
+</div>

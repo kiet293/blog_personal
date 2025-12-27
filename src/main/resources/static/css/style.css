@@ -1,43 +1,225 @@
+/* --- 1. GLOBAL THEME (CYBER DARK) --- */
+:root {
+    --bg-dark: #000000;       /* Nền đen sâu thẳm */
+    --glass-bg: rgba(30, 30, 30, 0.8); /* Tăng độ đậm nền kính để chữ dễ đọc hơn */
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --neon-blue: #0095f6;     /* Xanh chuẩn Instagram */
+    --text-main: #f5f5f5;     /* Màu chữ chính (Trắng sữa) */
+    --text-sub: #b0b3b8;      /* Màu chữ phụ (Xám bạc - Sáng hơn màu cũ) */
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-dark);
+    /* Nền gradient nhẹ */
+    background-image: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.05) 0%, transparent 40%);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Ép tất cả các thẻ tiêu đề và link phải theo màu chính */
+h1, h2, h3, h4, h5, h6, a {
+    color: var(--text-main);
+    text-decoration: none;
+    transition: 0.2s;
+}
+a:hover { color: var(--neon-blue); }
+
+/* --- 2. LAYOUT 3 CỘT --- */
+.layout-wrapper {
     display: flex;
     justify-content: center;
+    max-width: 1800px;
+    margin: 0 auto;
 }
 
-.container {
-    width: 60%;
-    background: white;
-    margin-top: 50px;
-    padding: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* SIDEBAR TRÁI */
+.sidebar-left {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 40px 20px;
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    background: var(--bg-dark);
+}
+
+.nav-item-custom {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 8px;
     border-radius: 8px;
-    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    transition: background 0.2s;
+}
+.nav-item-custom:hover { background-color: rgba(255, 255, 255, 0.1); }
+.nav-item-custom i { width: 30px; font-size: 1.5rem; margin-right: 15px; }
+
+@media (max-width: 1200px) {
+    .sidebar-left { width: 80px; padding: 40px 10px; align-items: center; }
+    .nav-label, .sidebar-brand { display: none; }
+    .sidebar-brand-icon { display: block !important; margin-bottom: 30px; }
+    .nav-item-custom i { margin-right: 0; }
+    .nav-item-custom { justify-content: center; padding: 15px; border-radius: 50%; }
 }
 
-header h1 {
-    color: #2c3e50;
+/* MAIN FEED */
+.main-feed {
+    width: 100%;
+    max-width: 630px;
+    margin-top: 20px;
+    margin-left: 250px;
+    margin-right: 320px;
+    padding-bottom: 50px;
+}
+@media (max-width: 1200px) { .main-feed { margin-left: 80px; margin-right: 0; max-width: 700px; } }
+@media (max-width: 768px) {
+    .main-feed { margin-left: 0; margin-right: 0; width: 100%; padding: 10px; }
+    .sidebar-left { display: none; }
 }
 
-.subtitle {
-    color: #7f8c8d;
-    font-style: italic;
-    font-size: 1.2em;
+/* SIDEBAR PHẢI */
+.sidebar-right {
+    width: 320px;
+    height: 100vh;
+    position: fixed;
+    right: 0;
+    top: 0;
+    padding: 50px 30px;
+    z-index: 100;
+}
+@media (max-width: 1200px) { .sidebar-right { display: none; } }
+
+/* --- 3. STORY STYLE --- */
+.story-container {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 0 20px 0;
+    margin-bottom: 10px;
+    scrollbar-width: none;
+}
+.story-container::-webkit-scrollbar { display: none; }
+
+.story-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    min-width: 70px;
+}
+.story-ring {
+    width: 66px; height: 66px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    position: relative;
+    transition: transform 0.2s;
+}
+.story-ring:hover { transform: scale(1.05); }
+.story-img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 3px solid var(--bg-dark);
+    object-fit: cover;
+    background: #222;
 }
 
-.skills ul {
-    list-style-type: none;
-    padding: 0;
+/* --- 4. COMPONENTS & GLASS --- */
+.glass-panel {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+.glass-panel img { max-width: 100%; }
+
+/* INPUT & FORM FIX */
+.form-control-dark {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important; /* Chữ trắng khi nhập */
+    border: 1px solid #444;
+}
+.form-control-dark:focus {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 8px rgba(0, 149, 246, 0.3);
+}
+.form-control-dark::placeholder {
+    color: #999 !important; /* Placeholder sáng hơn */
+    opacity: 1;
 }
 
-.skills li {
-    background: #3498db;
+/* MODAL & BUTTONS */
+.modal-content.glass-panel {
+    background-color: #262626;
+    border: 1px solid #444;
+}
+.btn-neon {
+    background-color: var(--neon-blue);
     color: white;
-    display: inline-block;
-    padding: 5px 15px;
-    margin: 5px;
-    border-radius: 20px;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+}
+.btn-neon:hover { background-color: #007bb5; color: white; }
+
+/* HOVER EFFECTS */
+.hover-neon:hover { color: var(--neon-blue) !important; cursor: pointer; }
+.hover-opacity-75:hover { opacity: 0.7; }
+
+/* ================================================================= */
+/* 🔥 PHẦN QUAN TRỌNG NHẤT: SỬA LỖI MÀU CHỮ TOÀN DIỆN 🔥 */
+/* ================================================================= */
+
+/* 1. Ép tất cả chữ mặc định của Bootstrap (muted, secondary) sang màu xám sáng (#b0b3b8) */
+.text-muted,
+.text-secondary,
+.text-body-secondary,
+small,
+.small {
+    color: var(--text-sub) !important;
+}
+
+/* 2. Ép chữ "text-white-50" (mờ 50%) sáng lên thành 80% cho dễ đọc */
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* 3. Label trong Form (ví dụ: Họ tên, Email...) phải màu trắng */
+label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* 4. Riêng Sidebar phải (Gợi ý): Tiêu đề phải sáng và viết hoa */
+.sidebar-right .fw-bold.small {
+    color: #ffffff !important;
+    opacity: 0.9;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+/* 5. Sidebar phải: Các link phụ (Xem tất cả, footer) */
+.sidebar-right a {
+    color: var(--text-sub);
+}
+.sidebar-right a:hover {
+    color: var(--text-main);
+    text-decoration: underline;
+}
+
+/* 6. Sửa màu icon (tim, comment) khi chưa bấm */
+.far, .fas {
+    color: inherit; /* Ăn theo màu chữ của thẻ cha */
 }

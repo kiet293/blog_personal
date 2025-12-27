@@ -1,42 +1,39 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<body>
-
-<nav th:fragment="header" class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);">
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-dark navbar-glass fixed-top">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="/"><i class="fas fa-code me-2"></i>GK Portfolio</a>
+        <a class="navbar-brand fw-bold fs-4" href="/">
+            <i class="fas fa-meteor text-info me-2"></i>GK<span class="text-info">Social</span>
+        </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
-
-                <li class="nav-item"><a class="nav-link" href="#">Dự án</a></li>
-
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link text-warning" href="/#write-post-section"><i class="fas fa-pen me-1"></i>Viết bài</a>
-                </li>
+                <li class="nav-item"><a class="nav-link px-3" href="/">Trang chủ</a></li>
 
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-primary btn-sm rounded-pill ms-3 px-4 fw-bold" href="/login">Đăng nhập</a>
+                    <a class="btn btn-neon btn-sm ms-3" href="/login">Đăng nhập</a>
                 </li>
 
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle btn btn-outline-light border-0 ms-2" href="#" role="button" data-bs-toggle="dropdown">
-                        <img th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=random&size=32'" class="rounded-circle me-1" width="24">
-                        <span sec:authentication="name">User</span>
+                <li class="nav-item dropdown ms-3" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=38bdf8&color=fff&bold=true'"
+                             class="rounded-circle me-2 border border-info" width="32" height="32">
+                        <span sec:authentication="name" class="fw-bold text-white">User</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li><a class="dropdown-item" href="#">Hồ sơ của tôi</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                    <ul class="dropdown-menu dropdown-menu-dark border-0 shadow-lg p-2 rounded-4" style="background: #1e293b;">
                         <li>
-                            <form th:action="@{/logout}" method="post">
-                                <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
-                            </form>
+                            <a class="dropdown-item rounded-3 mb-1"
+                               th:href="@{/profile/{username}(username=${#authentication.name})}">
+                                <i class="fas fa-user-astronaut me-2 text-info"></i> Trang cá nhân
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider border-secondary opacity-25"></li>
+                        <li>
+                            <a class="dropdown-item rounded-3 text-danger" href="/logout">
+                                <i class="fas fa-power-off me-2"></i> Đăng xuất
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -44,6 +41,3 @@
         </div>
     </div>
 </nav>
-
-</body>
-</html>

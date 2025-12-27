@@ -2,86 +2,117 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${userProfile.fullName} + ' | Hồ sơ'">Hồ sơ</title>
+    <title>Trang cá nhân | GK Social</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding-top: 70px;}
-        .profile-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 60px 0;
-            margin-bottom: 40px;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-        }
-        .avatar-large {
-            width: 150px; height: 150px; border: 5px solid rgba(255,255,255,0.5);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        .stat-card {
-            background: white; border-radius: 15px; padding: 20px;
-            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-    </style>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: header}"></div>
+<div class="layout-wrapper">
 
-<div class="profile-header text-center">
-    <div class="container">
-        <img th:src="'https://ui-avatars.com/api/?name=' + ${userProfile.fullName} + '&background=random&size=128'"
-             class="rounded-circle avatar-large mb-3">
+    <div th:replace="~{fragments/sidebar-left :: sidebar-left}"></div>
 
-        <h1 class="fw-bold" th:text="${userProfile.fullName}">Tên Đầy Đủ</h1>
-        <p class="opacity-75">@<span th:text="${userProfile.username}">username</span></p>
+    <div class="main-feed">
 
-        <div th:if="${#authentication.name == userProfile.username}">
-            <a href="#" class="btn btn-light btn-sm rounded-pill px-4 fw-bold text-primary">
-                <i class="fas fa-cog me-1"></i> Chỉnh sửa hồ sơ
-            </a>
-        </div>
-    </div>
-</div>
+        <div class="glass-panel p-4 text-center mb-4 position-relative">
+            <img th:src="'https://ui-avatars.com/api/?name=' + ${userProfile.fullName} + '&background=0f172a&color=38bdf8&size=128&bold=true'"
+                 class="rounded-circle border border-4 border-info shadow-lg mb-3"
+                 style="width: 120px; height: 120px;">
 
-<div class="container mb-5">
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="stat-card">
-                <h3 class="fw-bold text-primary" th:text="${posts.size()}">0</h3>
-                <p class="text-muted mb-0">Bài viết đã đăng</p>
+            <h2 class="fw-bold text-white mb-1" th:text="${userProfile.fullName}">Tên User</h2>
+            <p class="text-info font-monospace mb-4">@<span th:text="${userProfile.username}">username</span></p>
+
+            <div class="d-flex justify-content-center gap-5 text-white border-top border-secondary border-opacity-25 pt-3">
+                <div class="text-center">
+                    <span class="fw-bold fs-5 d-block" th:text="${posts.size()}">0</span>
+                    <small class="text-white-50 small text-uppercase">Bài viết</small>
+                </div>
+                <div class="text-center">
+                    <span class="fw-bold fs-5 d-block">1.2k</span>
+                    <small class="text-white-50 small text-uppercase">Follower</small>
+                </div>
+                <div class="text-center">
+                    <span class="fw-bold fs-5 d-block">560</span>
+                    <small class="text-white-50 small text-uppercase">Following</small>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-8">
-            <h4 class="mb-4 border-start border-4 border-primary ps-3">Bài viết của <span th:text="${userProfile.fullName}">User</span></h4>
+        <h5 class="text-white mb-3 ps-2 border-start border-4 border-info">
+            Bài viết của <span th:text="${userProfile.username}"></span>
+        </h5>
 
-            <div class="card border-0 shadow-sm mb-3 rounded-4" th:each="post : ${posts}">
-                <div class="card-body p-4">
-                    <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> <span th:text="${post.date}">Date</span></small>
-                    <h5 class="card-title fw-bold mt-2" th:text="${post.title}">Tiêu đề</h5>
-                    <p class="card-text text-secondary text-truncate" th:text="${post.content}">Nội dung...</p>
-                    <a href="#" class="text-decoration-none fw-bold small">Đọc tiếp -></a>
-
-                    <a th:if="${#authentication.name == userProfile.username}"
-                       th:href="@{/delete/{id}(id=${post.id})}"
-                       class="btn btn-sm btn-outline-danger border-0 float-end"
-                       onclick="return confirm('Xóa bài này?')"><i class="fas fa-trash"></i></a>
+        <div th:each="post : ${posts}" class="glass-panel p-0 mb-4 overflow-hidden">
+            <div class="d-flex align-items-center p-3">
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${userProfile.fullName} + '&background=random&color=fff'"
+                     class="rounded-circle me-2" width="40" height="40">
+                <div>
+                    <span class="fw-bold text-white" th:text="${userProfile.fullName}">Name</span>
+                    <small class="text-muted d-block" th:text="${post.date}">Date</small>
                 </div>
             </div>
 
-            <div th:if="${posts.empty}" class="text-center text-muted py-5">
-                <i class="fas fa-pen-fancy fa-2x mb-3 opacity-50"></i>
-                <p>Người dùng này chưa đăng bài viết nào.</p>
+            <div class="p-3 pt-0">
+                <h5 class="text-white mb-2">
+                    <a th:href="@{/post/{id}(id=${post.id})}" class="text-white text-decoration-none hover-neon">
+                        <span th:text="${post.title}">Tiêu đề</span>
+                    </a>
+                </h5>
+                <p class="text-white-50 text-truncate" th:text="${post.content}">Nội dung...</p>
+            </div>
+
+            <div th:if="${post.image != null}" class="px-3 pb-3">
+                <img th:src="@{'/uploads/' + ${post.image}}" class="w-100 rounded-3 border border-secondary border-opacity-25"
+                     style="object-fit: cover; max-height: 400px;">
+            </div>
+
+            <div class="p-3 pt-2 border-top border-secondary border-opacity-10">
+                <div class="d-flex gap-3 fs-5 text-white-50">
+                    <i class="far fa-heart hover-neon"></i>
+                    <i class="far fa-comment hover-neon"></i>
+                    <i class="far fa-share-square hover-neon ms-auto"></i>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${posts.empty}" class="text-center py-5 text-muted">
+            <i class="fas fa-ghost fa-3x mb-3 opacity-50"></i>
+            <p>Chưa có bài viết nào.</p>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/sidebar-right :: sidebar-right}"></div>
+</div>
+
+<div class="modal fade" id="createPostModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel border-0">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title text-white fw-bold mx-auto">Tạo bài viết mới</h5>
+                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/add}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="text" name="title" class="form-control form-control-dark mb-3" placeholder="Tiêu đề bài viết..." required>
+                    </div>
+                    <div class="mb-3">
+                        <textarea name="content" class="form-control form-control-dark mb-3" rows="5" placeholder="Bạn đang nghĩ gì thế?" required style="resize: none;"></textarea>
+                    </div>
+                    <div class="mb-3 p-3 rounded-3 border border-secondary border-opacity-25 bg-dark bg-opacity-25">
+                        <label class="text-white-50 small mb-2 d-block"><i class="fas fa-image me-2 text-info"></i>Chọn ảnh minh họa</label>
+                        <input type="file" name="imageFile" class="form-control form-control-dark form-control-sm" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-neon w-100 fw-bold">Chia sẻ ngay</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-<div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
