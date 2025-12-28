@@ -223,3 +223,30 @@ label {
 .far, .fas {
     color: inherit; /* Ăn theo màu chữ của thẻ cha */
 }
+
+/* --- TÍNH NĂNG XEM THÊM / THU GỌN --- */
+
+/* Class này giới hạn hiển thị tối đa 3 dòng */
+.content-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Số dòng muốn hiện */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-wrap; /* Giữ nguyên xuống dòng */
+}
+
+/* Nút Xem thêm */
+.btn-see-more {
+    cursor: pointer;
+    color: var(--text-sub);
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.btn-see-more:hover {
+    color: var(--neon-blue);
+    text-decoration: underline;
+}

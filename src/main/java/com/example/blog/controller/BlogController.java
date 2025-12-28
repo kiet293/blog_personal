@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import java.security.Principal;
 import com.example.blog.model.User;
+import com.example.blog.repository.CommentRepository;
 import com.example.blog.service.UserService;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,9 @@ public class BlogController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -83,6 +87,30 @@ public class BlogController {
 
         postService.addPost(newPost);
         return "redirect:/";
+    }
+
+    @PostMapping("/comment/add")
+    public String addComment(@RequestParam("postId") Long postId,
+                             @RequestParam("content") String content,
+                             Principal principal) {
+        if (principal != null && !content.trim().isEmpty()) {
+            User user = userService.findByUsername(principal.getName());
+            Post post = postService.getPostById(postId);
+
+            if (post != null) {
+                com.example.blog.model.Comment comment = new com.example.blog.model.Comment();
+                comment.setContent(content);
+                comment.setUser(user);
+                comment.setPost(post);
+
+                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM HH:mm");
+                comment.setDate(java.time.LocalDateTime.now().format(formatter));
+
+                commentRepository.save(comment);
+
+            }
+        }
+        return "redirect:/post/" + postId;
     }
 
     @GetMapping("/delete/{id}")

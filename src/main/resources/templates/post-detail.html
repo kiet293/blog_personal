@@ -1,4 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${post.title} + ' | GK Social'">Chi tiết bài viết</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
 <body>
+
 <div class="layout-wrapper">
 
     <div th:replace="~{fragments/sidebar-left :: sidebar-left}"></div>
@@ -8,8 +21,8 @@
             <i class="fas fa-arrow-left me-2"></i>Quay lại
         </a>
 
-        <div class="glass-panel p-4 mb-4">
-            <div class="d-flex align-items-center mb-3 pb-3 border-bottom border-secondary border-opacity-25">
+        <div class="glass-panel p-0 mb-4 overflow-hidden">
+            <div class="d-flex align-items-center p-4 pb-3 border-bottom border-secondary border-opacity-25">
                 <img th:src="'https://ui-avatars.com/api/?name=' + ${post.author != null ? post.author.fullName : 'A'} + '&background=random&color=fff'"
                      class="rounded-circle me-3" width="45">
                 <div>
@@ -18,17 +31,74 @@
                 </div>
             </div>
 
-            <h2 class="fw-bold text-white mb-3" th:text="${post.title}">Tiêu đề</h2>
-            <div class="text-white-50 fs-5 lh-base" style="white-space: pre-wrap;" th:text="${post.content}">
-                Nội dung...
+            <div class="px-4 py-3">
+                <h2 class="fw-bold text-white mb-3" th:text="${post.title}">Tiêu đề</h2>
+                <div class="post-content-wrapper mb-3">
+                    <div class="text-white-50 fs-5 lh-base content-truncate"
+                         style="white-space: pre-wrap;"
+                         th:id="'post-content-' + ${post.id}"
+                         th:text="${post.content}">
+                        Nội dung...
+                    </div>
+
+                    <span class="btn-see-more"
+                          th:id="'btn-more-' + ${post.id}"
+                          th:onclick="'toggleSeeMore(' + ${post.id} + ')'"
+                          style="display: none;">
+        Xem thêm
+    </span>
+                </div>
+            </div>
+
+            <div th:if="${post.image != null}" class="px-4 pb-4">
+                <img th:src="@{'/uploads/' + ${post.image}}"
+                     class="w-100 rounded-3 border border-secondary border-opacity-25 shadow-lg"
+                     style="object-fit: cover; max-height: 600px;">
+            </div>
+
+            <div class="px-4 py-3 border-top border-secondary border-opacity-10">
+                <div class="d-flex gap-3 fs-5 text-white-50">
+                    <i class="far fa-heart hover-neon"></i> <span class="fs-6">1.2k Thích</span>
+                </div>
             </div>
         </div>
 
-        <div class="glass-panel p-3">
-            <h6 class="text-white mb-3">Bình luận</h6>
-            <div class="d-flex gap-2">
-                <input type="text" class="form-control form-control-dark rounded-pill" placeholder="Viết bình luận...">
-                <button class="btn btn-neon rounded-circle"><i class="fas fa-paper-plane"></i></button>
+        <div class="glass-panel p-4">
+            <h5 class="text-white mb-4"><i class="far fa-comments me-2"></i>Bình luận</h5>
+
+            <form th:action="@{/comment/add}" method="post" class="d-flex gap-3 mb-4 align-items-center">
+                <input type="hidden" name="postId" th:value="${post.id}">
+
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${#authentication.name} + '&background=38bdf8&color=fff'"
+                     class="rounded-circle border border-secondary" width="40" height="40">
+
+                <div class="input-group">
+                    <input type="text" name="content" class="form-control form-control-dark rounded-start-pill ps-3"
+                           placeholder="Viết bình luận..." required autocomplete="off">
+                    <button class="btn btn-neon rounded-end-pill px-4" type="submit">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="comment-list" style="max-height: 500px; overflow-y: auto; padding-right: 5px;">
+
+                <div th:each="comment : ${post.comments}" class="d-flex gap-3 mb-3 animate-fade-in">
+                    <img th:src="'https://ui-avatars.com/api/?name=' + ${comment.user.fullName} + '&background=random&color=fff&size=40'"
+                         class="rounded-circle" width="40" height="40">
+
+                    <div class="bg-dark bg-opacity-50 p-3 rounded-3 border border-secondary border-opacity-10 w-100">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold text-white small" th:text="${comment.user.fullName}">Name</span>
+                            <small class="text-muted" style="font-size: 0.7rem;" th:text="${comment.date}">Time</small>
+                        </div>
+                        <p class="text-white-50 mb-0 small" th:text="${comment.content}">Content...</p>
+                    </div>
+                </div>
+
+                <div th:if="${post.comments.empty}" class="text-center text-muted py-3 small">
+                    Hãy là người đầu tiên bình luận về bài viết này!
+                </div>
             </div>
         </div>
     </div>
@@ -36,5 +106,61 @@
     <div th:replace="~{fragments/sidebar-right :: sidebar-right}"></div>
 </div>
 
+<div class="modal fade" id="createPostModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel border-0">
+            <div class="modal-header border-bottom border-secondary border-opacity-25">
+                <h5 class="modal-title text-white fw-bold mx-auto">Tạo bài viết mới</h5>
+                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/add}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="text" name="title" class="form-control form-control-dark mb-3" placeholder="Tiêu đề bài viết..." required>
+                    </div>
+                    <div class="mb-3">
+                        <textarea name="content" class="form-control form-control-dark mb-3" rows="5" placeholder="Bạn đang nghĩ gì thế?" required style="resize: none;"></textarea>
+                    </div>
+                    <div class="mb-3 p-3 rounded-3 border border-secondary border-opacity-25 bg-dark bg-opacity-25">
+                        <label class="text-white-50 small mb-2 d-block"><i class="fas fa-image me-2 text-info"></i>Chọn ảnh minh họa</label>
+                        <input type="file" name="imageFile" class="form-control form-control-dark form-control-sm" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-neon w-100 fw-bold">Chia sẻ ngay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Hàm xử lý bấm nút Xem thêm / Thu gọn
+    function toggleSeeMore(postId) {
+        var content = document.getElementById('post-content-' + postId);
+        var btn = document.getElementById('btn-more-' + postId);
+
+        if (content.classList.contains('content-truncate')) {
+            content.classList.remove('content-truncate');
+            btn.innerText = "Thu gọn";
+        } else {
+            content.classList.add('content-truncate');
+            btn.innerText = "Xem thêm";
+        }
+    }
+
+    // Tự động hiện nút "Xem thêm" nếu bài dài quá
+    document.addEventListener("DOMContentLoaded", function() {
+        var contents = document.querySelectorAll('.content-truncate');
+        contents.forEach(function(content) {
+            if (content.scrollHeight > content.clientHeight) {
+                var postId = content.id.split('-')[2];
+                var btn = document.getElementById('btn-more-' + postId);
+                if (btn) {
+                    btn.style.display = 'inline-block';
+                }
+            }
+        });
+    });
+</script>
 </body>
+</html>

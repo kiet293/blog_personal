@@ -3,6 +3,8 @@ package com.example.blog.model;
 import jakarta.persistence.*;
 import com.example.blog.model.User;
 
+import java.util.List;
+
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -22,6 +24,12 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id") // Khóa ngoại liên kết đến bảng users
     private User author;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OrderBy("id DESC")
+    private List<Comment> comments;
+
+
 
     public Post() {
 
@@ -52,4 +60,7 @@ public class Post {
 
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
+
+    public List<Comment> getComments() { return comments; }
+    public void setComments(List<Comment> comments) { this.comments = comments; }
 }
