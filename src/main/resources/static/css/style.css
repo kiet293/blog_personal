@@ -250,3 +250,81 @@ label {
     color: var(--neon-blue);
     text-decoration: underline;
 }
+
+/* --- INSTAGRAM SPLIT VIEW LAYOUT --- */
+
+/* 1. Container chính: Căn giữa màn hình, nền đen tối */
+.split-view-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #000; /* Nền đen bao quanh */
+}
+
+/* 2. Cái khung chứa nội dung (Box) */
+.split-view-box {
+    display: flex; /* CHIA CỘT TRÁI PHẢI */
+    width: 100%;
+    max-width: 1100px; /* Độ rộng tối đa giống Insta Web */
+    height: 85vh;      /* Chiều cao cố định để scroll bên trong */
+    background-color: #000;
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden; /* Cắt góc thừa */
+}
+
+/* 3. CỘT TRÁI (ẢNH) */
+.split-img-col {
+    flex: 1.5; /* Chiếm 60% chiều rộng */
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #262626;
+}
+.split-img-col img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ảnh không bị méo, hiển thị trọn vẹn */
+}
+
+/* 4. CỘT PHẢI (COMMENT & INFO) */
+.split-info-col {
+    flex: 1; /* Chiếm 40% chiều rộng */
+    display: flex;
+    flex-direction: column; /* Xếp dọc: Header - Body - Footer */
+    background-color: #000;
+}
+
+/* Header User */
+.split-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #262626;
+    display: flex;
+    align-items: center;
+}
+
+/* Body: Danh sách Comment (Phần duy nhất được cuộn) */
+.split-body {
+    flex: 1; /* Tự giãn nở */
+    overflow-y: auto; /* Scroll dọc */
+    padding: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #000;
+}
+
+/* Footer: Nút tim & Form nhập */
+.split-footer {
+    border-top: 1px solid #262626;
+    padding: 16px;
+    background-color: #000;
+}
+
+/* Responsive: Trên điện thoại thì dọc lại bình thường */
+@media (max-width: 768px) {
+    .split-view-box { flex-direction: column; height: auto; }
+    .split-img-col { border-right: none; border-bottom: 1px solid #262626; height: 400px; }
+    .split-body { max-height: 300px; }
+}
