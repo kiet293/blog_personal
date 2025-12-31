@@ -1,6 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.model.Post;
+import com.example.blog.service.CommentService;
 import com.example.blog.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,10 @@ public class BlogController {
     private UserService userService;
 
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("name", "Nguyễn Gia Kiệt"); // Dữ liệu từ ảnh cũ của bạn
-        model.addAttribute("jobTitle", "Java Student");
         model.addAttribute("postList", postService.getAllPosts());
         model.addAttribute("newPost", new Post()); // Dữ liệu rỗng để điền từ form
         return "index";
@@ -98,16 +97,7 @@ public class BlogController {
             Post post = postService.getPostById(postId);
 
             if (post != null) {
-                com.example.blog.model.Comment comment = new com.example.blog.model.Comment();
-                comment.setContent(content);
-                comment.setUser(user);
-                comment.setPost(post);
-
-                java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM HH:mm");
-                comment.setDate(java.time.LocalDateTime.now().format(formatter));
-
-                commentRepository.save(comment);
-
+                commentService.addComment(content, user, post);
             }
         }
         return "redirect:/post/" + postId;

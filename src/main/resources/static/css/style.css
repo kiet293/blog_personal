@@ -328,3 +328,68 @@ label {
     .split-img-col { border-right: none; border-bottom: 1px solid #262626; height: 400px; }
     .split-body { max-height: 300px; }
 }
+
+/* --- PROFILE GRID LAYOUT (Giao diện lưới trang cá nhân) --- */
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Quan trọng: Chia 3 cột */
+    gap: 15px; /* Khoảng cách giữa các ô */
+    margin-top: 20px;
+}
+
+.profile-item {
+    position: relative;
+    aspect-ratio: 1 / 1; /* Quan trọng: Ép ảnh thành hình vuông */
+    background-color: #262626;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #333;
+}
+
+.profile-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Quan trọng: Ảnh phủ kín ô vuông */
+    transition: transform 0.3s ease;
+}
+
+/* Hiệu ứng overlay khi di chuột */
+.profile-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.profile-item:hover .profile-overlay {
+    opacity: 1;
+}
+.profile-item:hover img {
+    transform: scale(1.1);
+}
+
+/* Style cho bài viết text */
+.profile-text-only {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    color: #fff;
+    font-size: 0.9rem;
+    background: linear-gradient(135deg, #262626 0%, #1a1a1a 100%);
+}
