@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tìm kiếm | GK Social</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="layout-wrapper">
+
+    <div th:replace="~{fragments/sidebar-left :: sidebar-left}"></div>
+
+    <div class="main-feed">
+
+        <div class="glass-panel p-4 mb-4">
+            <h3 class="text-white fw-bold mb-3">Tìm kiếm</h3>
+            <form th:action="@{/search}" method="get" class="position-relative">
+                <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" name="keyword" th:value="${keyword}"
+                       class="form-control form-control-dark ps-5 py-2 rounded-pill"
+                       placeholder="Tìm kiếm mọi người..." autocomplete="off">
+            </form>
+        </div>
+
+        <h5 class="text-white mb-3" th:if="${keyword != null}">Kết quả cho: <span class="text-info" th:text="${keyword}"></span></h5>
+
+        <div class="glass-panel p-0 overflow-hidden">
+
+            <div th:each="user : ${users}" class="d-flex align-items-center p-3 border-bottom border-secondary border-opacity-25 hover-bg-dark">
+                <a th:href="@{/profile/{username}(username=${user.username})}">
+                    <img th:if="${user.avatar != null}" th:src="@{'/uploads/' + ${user.avatar}}"
+                         class="rounded-circle me-3 border border-secondary" width="50" height="50" style="object-fit: cover;">
+                    <img th:if="${user.avatar == null}" th:src="'https://ui-avatars.com/api/?name=' + ${user.fullName} + '&background=random&color=fff'"
+                         class="rounded-circle me-3 border border-secondary" width="50" height="50" style="object-fit: cover;">
+                </a>
+
+                <div class="flex-grow-1">
+                    <a th:href="@{/profile/{username}(username=${user.username})}" class="text-decoration-none">
+                        <div class="fw-bold text-white" th:text="${user.fullName}">Full Name</div>
+                        <div class="text-white-50 small">@<span th:text="${user.username}">username</span></div>
+                        <div class="text-muted small text-truncate" style="max-width: 300px;" th:text="${user.bio}">Bio...</div>
+                    </a>
+                </div>
+
+                <a th:href="@{/profile/{username}(username=${user.username})}" class="btn btn-sm btn-outline-light rounded-pill px-3 fw-bold">
+                    Xem hồ sơ
+                </a>
+            </div>
+
+            <div th:if="${users.empty}" class="p-5 text-center text-muted">
+                <i class="fas fa-search fa-3x mb-3 opacity-50"></i>
+                <p>Không tìm thấy người dùng nào phù hợp.</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/sidebar-right :: sidebar-right}"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

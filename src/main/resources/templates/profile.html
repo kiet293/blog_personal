@@ -31,47 +31,47 @@
                      style="width: 150px; height: 150px; object-fit: cover;">
             </div>
 
-            <div class="flex-grow-1">
-                <div class="d-flex align-items-center mb-3">
-                    <h2 class="text-white fw-light mb-0 me-4" th:text="${userProfile.username}">username</h2>
+            <div class="flex-grow-1 ms-4">
 
-                    <div th:if="${isOwner}">
-                        <button class="btn btn-secondary btn-sm fw-bold px-3 py-1"
-                                data-bs-toggle="modal" data-bs-target="#editProfileModal"
-                                style="background-color: #363636; border: none;">
-                            Chỉnh sửa trang cá nhân
-                        </button>
-                        <i class="fas fa-cog text-white ms-3 fs-5" style="cursor: pointer;"></i>
+                <div class="d-flex align-items-center mb-4">
+                    <h2 class="text-white fw-light mb-0 me-4 profile-username" th:text="${userProfile.username}">username</h2>
+
+                    <div th:if="${isOwner}" class="d-flex align-items-center"> <button class="btn btn-secondary fw-bold px-3 py-1 rounded-3 text-nowrap" style="font-size: 0.9rem; min-width: 120px;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        Chỉnh sửa
+                    </button>
+
+                        <i class="fas fa-cog text-white ms-3 fs-5 hover-neon" style="cursor: pointer;"></i>
                     </div>
 
-                    <div th:unless="${isOwner}">
-                        <form th:action="@{/profile/follow/{id}(id=${userProfile.id})}" method="post">
+                    <div th:unless="${isOwner}" class="d-flex gap-2 align-items-center">
+                        <form th:action="@{/profile/follow/{id}(id=${userProfile.id})}" method="post" style="margin: 0;">
 
                             <button th:if="${!isFollowing}" type="submit"
-                                    class="btn btn-primary btn-sm fw-bold px-4 py-1">
-                                Theo dõi
+                                    class="btn btn-primary fw-bold px-3 py-1 rounded-3 text-nowrap"
+                                    style="font-size: 0.9rem; min-width: 120px;"> Theo dõi
                             </button>
 
                             <button th:if="${isFollowing}" type="submit"
-                                    class="btn btn-secondary btn-sm fw-bold px-4 py-1"
-                                    style="background-color: #363636; border: none;">
-                                Đang theo dõi
+                                    class="btn btn-secondary fw-bold px-3 py-1 rounded-3 text-nowrap"
+                                    style="font-size: 0.9rem; min-width: 120px;"> Đang theo dõi
                             </button>
-
-                            <button type="button" class="btn btn-secondary btn-sm fw-bold px-3 py-1 ms-2" style="background-color: #363636; border: none;">Nhắn tin</button>
                         </form>
+
+                        <button type="button" class="btn btn-secondary fw-bold px-3 py-1 rounded-3 text-nowrap"
+                                style="font-size: 0.9rem; min-width: 120px;"> Nhắn tin
+                        </button>
                     </div>
                 </div>
 
-                <div class="d-flex gap-5 text-white mb-3">
+                <div class="d-flex gap-5 text-white mb-4 profile-stats">
                     <span><strong th:text="${postCount}">0</strong> bài viết</span>
                     <span style="cursor: pointer;"><strong th:text="${followerCount}">0</strong> người theo dõi</span>
                     <span style="cursor: pointer;"><strong th:text="${followingCount}">0</strong> đang theo dõi</span>
                 </div>
 
-                <div>
-                    <div class="fw-bold text-white" th:text="${userProfile.fullName}">Full Name</div>
-                    <div class="text-white-50 small" style="white-space: pre-line;"
+                <div class="profile-bio">
+                    <div class="fw-bold text-white mb-1" th:text="${userProfile.fullName}">Full Name</div>
+                    <div class="text-white-50" style="white-space: pre-line; font-size: 0.95rem;"
                          th:text="${userProfile.bio != null ? userProfile.bio : ''}">
                     </div>
                 </div>

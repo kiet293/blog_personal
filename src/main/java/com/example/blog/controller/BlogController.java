@@ -20,6 +20,7 @@ import com.example.blog.service.UserService;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.*;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -36,8 +37,16 @@ public class BlogController {
     private CommentService commentService;
 
     @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("postList", postService.getAllPosts());
+    public String home(Model model, Principal principal) {
+        List<Post> posts;
+
+        if (principal != null) {
+            User currentUser = userService.findByUsername(principal.getName());
+            posts = postService.getNewsfeed(currentUser);
+        } else {
+            posts = postService.getAllPosts();
+       }
+        model.addAttribute("postList", posts);
         model.addAttribute("newPost", new Post()); // Dữ liệu rỗng để điền từ form
         return "index";
     }

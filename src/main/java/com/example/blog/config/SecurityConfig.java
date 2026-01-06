@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((request) -> request
                         // 1. Cho phép truy cập tự do vào các trang này:
-                        .requestMatchers("/", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
+                        .requestMatchers("/login", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
                         // 2. Tất cả các trang khác yêu cầu đăng nhập
                         .anyRequest().authenticated()
                 )

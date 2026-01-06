@@ -393,3 +393,40 @@ label {
     font-size: 0.9rem;
     background: linear-gradient(135deg, #262626 0%, #1a1a1a 100%);
 }
+
+/* Tinh chỉnh Username */
+.profile-username {
+    font-size: 1.8rem; /* Kích thước vừa phải */
+    font-weight: 300; /* Font mảnh cho hiện đại */
+}
+
+/* Style lại các nút bấm cho giống dark mode */
+.btn-primary {
+    background-color: #0095f6 !important; /* Màu xanh đặc trưng của nút Follow */
+    border: none !important;
+}
+.btn-primary:hover {
+    background-color: #0074cc !important;
+}
+
+.btn-secondary {
+    background-color: #363636 !important; /* Màu xám tối cho các nút phụ */
+    border: none !important;
+    color: #fff !important;
+}
+.btn-secondary:hover {
+    background-color: #262626 !important;
+}
+
+/* Phần thống kê */
+.profile-stats {
+    font-size: 1rem;
+}
+.profile-stats strong {
+    font-weight: 600;
+}
+
+/* Phần Bio */
+.profile-bio {
+    line-height: 1.4;
+}

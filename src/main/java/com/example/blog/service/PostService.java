@@ -17,15 +17,26 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
+    public List<Post> getAllPosts() {
+        return postRepository.findAllByOrderByIdDesc();
+    }
+
+    public List<Post> getNewsfeed(User currentUser) {
+        List<User> authors = new ArrayList<>();
+        authors.addAll(currentUser.getFollowing());
+//        authors.add(currentUser);
+        return postRepository.findByAuthorInOrderByIdDesc(authors);
+    }
+
     // Add bài viết mới
     public void addPost(Post post) {
         postRepository.save(post);
     }
 
     // Lấy tất cả bài viết
-    public List<Post> getAllPosts() {
-        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-    }
+//    public List<Post> getAllPosts() {
+//        return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+//    }
 
     // Hàm xóa bài viết theo ID
     public void deletePost(Long id) {
