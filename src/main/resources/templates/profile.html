@@ -36,10 +36,12 @@
                 <div class="d-flex align-items-center mb-4">
                     <h2 class="text-white fw-light mb-0 me-4 profile-username" th:text="${userProfile.username}">username</h2>
 
-                    <div th:if="${isOwner}" class="d-flex align-items-center"> <button class="btn btn-secondary fw-bold px-3 py-1 rounded-3 text-nowrap" style="font-size: 0.9rem; min-width: 120px;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                        Chỉnh sửa
-                    </button>
-
+                    <div th:if="${isOwner}">
+                        <button class="btn btn-secondary fw-bold px-3 py-1 rounded-3"
+                                style="font-size: 0.9rem;"
+                                data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            Chỉnh sửa trang cá nhân
+                        </button>
                         <i class="fas fa-cog text-white ms-3 fs-5 hover-neon" style="cursor: pointer;"></i>
                     </div>
 
