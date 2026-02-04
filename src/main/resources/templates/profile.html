@@ -104,7 +104,13 @@
                     </div>
 
                     <div class="profile-overlay">
-                        <span><i class="fas fa-heart me-2"></i>1.2k</span> <span><i class="fas fa-comment me-2"></i><span th:text="${post.comments.size()}">0</span></span>
+                        <span>
+                            <i class="fas fa-heart me-2"></i><span th:text="${post.likes.size()}">0</span>
+                        </span>
+
+                        <span>
+                            <i class="fas fa-comment me-2"></i><span th:text="${post.comments.size()}">0</span>
+                        </span>
                     </div>
                 </a>
             </div>
