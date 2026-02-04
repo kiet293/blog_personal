@@ -28,7 +28,11 @@
         .split-info-col { flex: 1; display: flex; flex-direction: column; }
         .split-header, .split-footer { padding: 15px; border-bottom: 1px solid #333; display: flex; align-items: center; }
         .split-footer { border-top: 1px solid #333; border-bottom: none; display: block; }
-        .split-body { flex: 1; overflow-y: auto; padding: 15px; scrollbar-width: thin; scrollbar-color: #333 #000; }
+        .split-body { flex: 1; overflow-y: auto; padding: 15px; scrollbar-width: thin; scrollbar-color: #333 #000; scroll-behavior: smooth; }
+
+        /* Hiệu ứng hiện comment mới */
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -78,26 +82,28 @@
                     </div>
                 </div>
 
-                <div th:each="comment : ${post.comments}" class="d-flex gap-3 mb-3">
-                    <img th:if="${comment.user.avatar != null}" th:src="@{'/uploads/' + ${comment.user.avatar}}"
-                         class="rounded-circle" width="32" height="32" style="object-fit: cover;">
-                    <img th:if="${comment.user.avatar == null}"
-                         th:src="'https://ui-avatars.com/api/?name=' + ${comment.user.fullName} + '&background=random&color=fff&size=32'"
-                         class="rounded-circle" width="32" height="32">
+                <div id="comment-list">
+                    <div th:each="comment : ${post.comments}" class="d-flex gap-3 mb-3">
+                        <img th:if="${comment.user.avatar != null}" th:src="@{'/uploads/' + ${comment.user.avatar}}"
+                             class="rounded-circle" width="32" height="32" style="object-fit: cover;">
+                        <img th:if="${comment.user.avatar == null}"
+                             th:src="'https://ui-avatars.com/api/?name=' + ${comment.user.fullName} + '&background=random&color=fff&size=32'"
+                             class="rounded-circle" width="32" height="32">
 
-                    <div class="w-100">
-                        <div>
-                            <span class="fw-bold text-white small me-1" th:text="${comment.user.fullName}">Name</span>
-                            <span class="text-white small" th:text="${comment.content}">Nội dung...</span>
+                        <div class="w-100">
+                            <div>
+                                <span class="fw-bold text-white small me-1" th:text="${comment.user.fullName}">Name</span>
+                                <span class="text-white small" th:text="${comment.content}">Nội dung...</span>
+                            </div>
+                            <div class="d-flex gap-3 mt-1 align-items-center">
+                                <small class="text-muted" style="font-size: 0.7rem;" th:text="${comment.date}">Time</small>
+                            </div>
                         </div>
-                        <div class="d-flex gap-3 mt-1 align-items-center">
-                            <small class="text-muted" style="font-size: 0.7rem;" th:text="${comment.date}">Time</small>
-                        </div>
+                        <i class="far fa-heart text-muted" style="font-size: 0.8rem; cursor: pointer;"></i>
                     </div>
-                    <i class="far fa-heart text-muted" style="font-size: 0.8rem; cursor: pointer;"></i>
                 </div>
 
-                <div th:if="${post.comments.empty}" class="text-center text-muted py-5 small">
+                <div id="empty-msg" th:if="${post.comments.empty}" class="text-center text-muted py-5 small">
                     Chưa có bình luận nào.<br>Hãy bắt đầu cuộc trò chuyện.
                 </div>
             </div>
@@ -121,7 +127,8 @@
                 </div>
                 <small class="text-muted text-uppercase d-block mb-3" style="font-size: 0.65rem;" th:text="${post.date}">NGÀY</small>
 
-                <form th:action="@{/post/{id}/comment(id=${post.id})}" method="post" class="d-flex align-items-center border-top border-secondary border-opacity-25 pt-3">
+                <form onsubmit="submitComment(event, this)" class="d-flex align-items-center border-top border-secondary border-opacity-25 pt-3">
+                    <input type="hidden" name="postId" th:value="${post.id}">
                     <i class="far fa-smile text-white fs-4 me-3"></i>
                     <input type="text" name="content" class="form-control form-control-dark border-0 bg-transparent px-0 text-white small"
                            placeholder="Thêm bình luận..." required autocomplete="off" style="box-shadow: none;">
@@ -142,22 +149,14 @@
 
         fetch('/api/post/' + postId + '/like', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
-            }
+            headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken }
         })
-            .then(res => {
-                if (!res.ok) throw new Error("Lỗi kết nối");
-                return res.json();
-            })
+            .then(res => { if (!res.ok) throw new Error("Lỗi"); return res.json(); })
             .then(data => {
                 if (data.success) {
                     const icon = document.getElementById('like-icon-' + postId);
                     const count = document.getElementById('like-count-' + postId);
-
                     count.innerText = data.likeCount;
-
                     if (data.liked) {
                         icon.className = 'fas fa-heart text-danger';
                         icon.style.transform = "scale(1.2)";
@@ -167,6 +166,68 @@
                     }
                 } else {
                     window.location.href = "/login";
+                }
+            })
+            .catch(e => console.error(e));
+    }
+</script>
+
+<script>
+    function submitComment(event, formElement) {
+        event.preventDefault(); // Ngăn load lại trang
+
+        const postId = formElement.postId.value;
+        const content = formElement.content.value;
+
+        if(!content.trim()) return; // Không gửi nếu trống
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        const formData = new FormData();
+        formData.append('content', content);
+
+        fetch('/api/post/' + postId + '/comment', {
+            method: 'POST',
+            headers: { [csrfHeader]: csrfToken },
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Xóa ô nhập liệu
+                    formElement.content.value = "";
+
+                    // Tạo HTML comment mới
+                    const newCommentHtml = `
+                    <div class="d-flex gap-3 mb-3 animate-fade-in">
+                        <img src="${data.avatarUrl}" class="rounded-circle" width="32" height="32" style="object-fit: cover;">
+                        <div class="w-100">
+                            <div>
+                                <span class="fw-bold text-white small me-1">${data.username}</span>
+                                <span class="text-white small">${data.content}</span>
+                            </div>
+                            <div class="d-flex gap-3 mt-1 align-items-center">
+                                <small class="text-muted" style="font-size: 0.7rem;">${data.date}</small>
+                            </div>
+                        </div>
+                        <i class="far fa-heart text-muted" style="font-size: 0.8rem;"></i>
+                    </div>
+                `;
+
+                    // Chèn vào cuối danh sách
+                    const list = document.getElementById('comment-list');
+                    list.insertAdjacentHTML('beforeend', newCommentHtml);
+
+                    // Ẩn thông báo trống
+                    const emptyMsg = document.getElementById('empty-msg');
+                    if(emptyMsg) emptyMsg.style.display = 'none';
+
+                    // Cuộn xuống dưới cùng
+                    const body = document.querySelector('.split-body');
+                    body.scrollTop = body.scrollHeight;
+                } else {
+                    alert("Có lỗi xảy ra hoặc chưa đăng nhập!");
                 }
             })
             .catch(e => console.error(e));

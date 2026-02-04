@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +60,50 @@ public class InteractionController {
         }
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/api/post/{id}/comment")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> addCommentApi(@PathVariable("id") Long postId,
+                                                             @RequestParam("content") String content,
+                                                             Principal principal) {
+        Map<String, Object> response = new HashMap<>();
+        if (principal == null || content.trim().isEmpty()) {
+            response.put("success", false);
+            return ResponseEntity.ok(response);
+        }
+
+        User user = userService.findByUsername(principal.getName());
+        Post post = postService.getPostById(postId);
+
+        if (post != null) {
+            // 1. Lưu comment vào DB
+            commentService.addComment(content, user, post);
+
+            // 2. Chuẩn bị dữ liệu trả về cho JS vẽ giao diện
+            response.put("success", true);
+            response.put("username", user.getFullName());
+            response.put("content", content);
+            response.put("date", "Vừa xong"); // Hoặc dùng LocalDateTime.now() format
+
+            // Xử lý Avatar URL (để JS đỡ phải tính toán)
+            String avatarUrl;
+            if (user.getAvatar() != null && !user.getAvatar().trim().isEmpty()) {
+                avatarUrl = "/uploads/" + user.getAvatar();
+            } else {
+                // Mã hóa tên (Ví dụ: "Gia Kiệt" -> "Gia+Ki%E1%BB%87t") để URL không bị lỗi
+                try {
+                    String encodedName = URLEncoder.encode(user.getFullName(), StandardCharsets.UTF_8);
+                    avatarUrl = "https://ui-avatars.com/api/?name=" + encodedName + "&background=random&color=fff&size=32";
+                } catch (Exception e) {
+                    avatarUrl = "https://ui-avatars.com/api/?name=User&background=random&color=fff&size=32";
+                }
+            }
+            response.put("avatarUrl", avatarUrl);
+        } else {
+            response.put("success", false);
+        }
+            return ResponseEntity.ok(response);
+        }
 
     // Xu ly comment
     @PostMapping("/post/{id}/comment")
