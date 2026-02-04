@@ -97,5 +97,18 @@ public class User {
     public List<Post> getPosts() { return posts; }
     public void setPosts(List<Post> posts) { this.posts = posts; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        User user = (User) o;
+
+        return id != null && id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

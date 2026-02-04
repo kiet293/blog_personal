@@ -3,7 +3,9 @@ package com.example.blog.model;
 import jakarta.persistence.*;
 import com.example.blog.model.User;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -25,6 +27,16 @@ public class Post {
     @JoinColumn(name = "user_id") // Khóa ngoại liên kết đến bảng users
     private User author;
 
+    // danh sach like
+    @ManyToMany
+    @JoinTable(
+            name = "post_likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likes = new HashSet<>();
+
+    // danh sach comment
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @OrderBy("id DESC")
     private List<Comment> comments;
@@ -63,4 +75,7 @@ public class Post {
 
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
+
+    public Set<User> getLikes() { return likes; }
+    public void setLikes(Set<User> likes) { this.likes = likes; }
 }

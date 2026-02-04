@@ -6,6 +6,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
@@ -66,23 +68,31 @@
             </div>
 
             <div class="px-3 pb-3">
+                <div class="d-flex align-items-center gap-4 fs-4 text-white mb-2 pt-2 border-top border-secondary border-opacity-10">
 
-                <div class="d-flex gap-3 fs-4 text-white mb-2 pt-3">
-                    <i class="far fa-heart hover-neon"></i>
-                    <a th:href="@{/post/{id}(id=${post.id})}"
-                       class="text-white text-decoration-none d-flex align-items-center">
-                        <i class="far fa-comment hover-neon"></i>
+                    <i th:id="'like-icon-' + ${post.id}"
+                       th:class="${post.likes.contains(currentUser)} ? 'fas fa-heart text-danger' : 'far fa-heart text-white hover-neon'"
+                       th:onclick="'toggleLike(' + ${post.id} + ')'"
+                       style="cursor: pointer; transition: transform 0.2s;">
+                    </i>
+
+                    <a th:href="@{/post/{id}(id=${post.id})}" class="text-white text-decoration-none hover-neon d-flex align-items-center">
+                        <i class="far fa-comment"></i>
                     </a>
+
                     <i class="far fa-paper-plane hover-neon"></i>
-                    <i class="far fa-bookmark ms-auto hover-neon"></i>
                 </div>
 
-                <div class="fw-bold text-white mb-2">1,024 lượt thích</div>
+                <div class="fw-bold text-white mb-2">
+                    <span th:id="'like-count-' + ${post.id}" th:text="${post.likes.size()}">0</span> lượt thích
+                </div>
 
-                <a th:href="@{/post/{id}(id=${post.id})}" class="text-muted text-decoration-none small d-block">
-                    Xem tất cả bình luận
+                <a th:href="@{/post/{id}(id=${post.id})}" class="text-muted text-decoration-none small"
+                   th:if="${!post.comments.empty}">
+                    Xem tất cả <span th:text="${post.comments.size()}"></span> bình luận
                 </a>
             </div>
+
         </div>
     </div>
 
@@ -159,6 +169,42 @@
             }
         });
     });
+</script>
+
+<script>
+    function toggleLike(postId) {
+        // Lấy Token bảo mật
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        fetch('/api/post/' + postId + '/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const icon = document.getElementById('like-icon-' + postId);
+                    const count = document.getElementById('like-count-' + postId);
+
+                    count.innerText = data.likeCount;
+
+                    if (data.liked) {
+                        icon.className = 'fas fa-heart text-danger'; // Tim đỏ
+                        icon.style.transform = "scale(1.2)";
+                        setTimeout(() => icon.style.transform = "scale(1)", 200);
+                    } else {
+                        icon.className = 'far fa-heart text-white hover-neon'; // Tim trắng
+                    }
+                } else {
+                    window.location.href = "/login";
+                }
+            })
+            .catch(e => console.error(e));
+    }
 </script>
 </body>
 </html>

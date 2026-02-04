@@ -1,7 +1,6 @@
 package com.example.blog.controller;
 
 import com.example.blog.model.Post;
-import com.example.blog.service.CommentService;
 import com.example.blog.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +31,6 @@ public class BlogController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private CommentService commentService;
 
     @GetMapping("/")
     public String home(Model model, Principal principal) {
@@ -97,21 +93,6 @@ public class BlogController {
         return "redirect:/";
     }
 
-    @PostMapping("/comment/add")
-    public String addComment(@RequestParam("postId") Long postId,
-                             @RequestParam("content") String content,
-                             Principal principal) {
-        if (principal != null && !content.trim().isEmpty()) {
-            User user = userService.findByUsername(principal.getName());
-            Post post = postService.getPostById(postId);
-
-            if (post != null) {
-                commentService.addComment(content, user, post);
-            }
-        }
-        return "redirect:/post/" + postId;
-    }
-
     @GetMapping("/delete/{id}")
     public  String deletePost(@PathVariable Long id){
         postService.deletePost(id);
@@ -119,13 +100,19 @@ public class BlogController {
     }
 
     @GetMapping("/post/{id}")
-    public String viewPostDetails(@PathVariable Long id, Model model) {
+    public String viewPostDetails(@PathVariable Long id, Model model, Principal principal) {
         Post post = postService.getPostById(id);
 
         // nếu bài viết không tồn tại
         if (post == null) {
             return "redirect:/"; // Nếu không tìm thấy bài viết, quay về trang chủ
         }
+
+        if (principal != null) {
+            User currentUser = userService.findByUsername(principal.getName());
+            model.addAttribute("currentUser", currentUser);
+        }
+
         model.addAttribute("post", post);
         return "post-detail"; // Trả về trang chi tiết bài viết
     }

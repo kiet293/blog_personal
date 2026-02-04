@@ -2,16 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Bài viết chi tiết | GK Social</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        body { background-color: #000; overflow: hidden; }
+        .split-view-container {
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw;
+        }
+        .split-view-box {
+            display: flex; width: 80%; max-width: 1200px; height: 85vh;
+            background: #000; border: 1px solid #333; border-radius: 5px; overflow: hidden;
+        }
+        .split-img-col {
+            flex: 1.5; background: #0a0a0a; display: flex; align-items: center; justify-content: center;
+            border-right: 1px solid #333;
+        }
+        .split-img-col img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .split-info-col { flex: 1; display: flex; flex-direction: column; }
+        .split-header, .split-footer { padding: 15px; border-bottom: 1px solid #333; display: flex; align-items: center; }
+        .split-footer { border-top: 1px solid #333; border-bottom: none; display: block; }
+        .split-body { flex: 1; overflow-y: auto; padding: 15px; scrollbar-width: thin; scrollbar-color: #333 #000; }
+    </style>
 </head>
-<body style="background-color: #000;">
+<body>
 
 <div class="split-view-container">
 
-    <a href="/" class="position-absolute top-0 end-0 m-4 text-white fs-2 text-decoration-none">
+    <a href="/" class="position-absolute top-0 end-0 m-4 text-white fs-2 text-decoration-none z-3">
         <i class="fas fa-times"></i>
     </a>
 
@@ -19,7 +43,6 @@
 
         <div class="split-img-col">
             <img th:if="${post.image != null}" th:src="@{'/uploads/' + ${post.image}}">
-
             <div th:if="${post.image == null}" class="p-5 text-center text-white">
                 <h3 th:text="${post.title}">Tiêu đề</h3>
                 <p class="text-white-50" th:text="${post.content}">Nội dung...</p>
@@ -29,17 +52,24 @@
         <div class="split-info-col">
 
             <div class="split-header">
-                <img th:src="'https://ui-avatars.com/api/?name=' + ${post.author.fullName} + '&background=random&color=fff'"
-                     class="rounded-circle me-3 border border-secondary" width="32" height="32">
+                <a th:href="@{/profile/{username}(username=${post.author.username})}">
+                    <img th:if="${post.author.avatar != null}" th:src="@{'/uploads/' + ${post.author.avatar}}"
+                         class="rounded-circle me-3 border border-secondary" width="32" height="32" style="object-fit: cover;">
+                    <img th:if="${post.author.avatar == null}"
+                         th:src="'https://ui-avatars.com/api/?name=' + ${post.author.fullName} + '&background=random&color=fff'"
+                         class="rounded-circle me-3 border border-secondary" width="32" height="32">
+                </a>
                 <span class="fw-bold text-white small me-2" th:text="${post.author.fullName}">User</span>
                 <span class="text-white-50 small">• Đang theo dõi</span>
-                <i class="fas fa-ellipsis-h text-white ms-auto hover-neon"></i>
+                <i class="fas fa-ellipsis-h text-white ms-auto hover-neon" style="cursor: pointer;"></i>
             </div>
 
             <div class="split-body">
-
                 <div class="d-flex gap-3 mb-4">
-                    <img th:src="'https://ui-avatars.com/api/?name=' + ${post.author.fullName} + '&background=random&color=fff'"
+                    <img th:if="${post.author.avatar != null}" th:src="@{'/uploads/' + ${post.author.avatar}}"
+                         class="rounded-circle" width="32" height="32" style="object-fit: cover;">
+                    <img th:if="${post.author.avatar == null}"
+                         th:src="'https://ui-avatars.com/api/?name=' + ${post.author.fullName} + '&background=random&color=fff'"
                          class="rounded-circle" width="32" height="32">
                     <div>
                         <span class="fw-bold text-white small me-1" th:text="${post.author.fullName}">User</span>
@@ -49,7 +79,10 @@
                 </div>
 
                 <div th:each="comment : ${post.comments}" class="d-flex gap-3 mb-3">
-                    <img th:src="'https://ui-avatars.com/api/?name=' + ${comment.user.fullName} + '&background=random&color=fff&size=32'"
+                    <img th:if="${comment.user.avatar != null}" th:src="@{'/uploads/' + ${comment.user.avatar}}"
+                         class="rounded-circle" width="32" height="32" style="object-fit: cover;">
+                    <img th:if="${comment.user.avatar == null}"
+                         th:src="'https://ui-avatars.com/api/?name=' + ${comment.user.fullName} + '&background=random&color=fff&size=32'"
                          class="rounded-circle" width="32" height="32">
 
                     <div class="w-100">
@@ -59,10 +92,9 @@
                         </div>
                         <div class="d-flex gap-3 mt-1 align-items-center">
                             <small class="text-muted" style="font-size: 0.7rem;" th:text="${comment.date}">Time</small>
-                            <small class="text-muted fw-bold hover-neon" style="font-size: 0.7rem; cursor: pointer;">Trả lời</small>
                         </div>
                     </div>
-                    <i class="far fa-heart text-muted" style="font-size: 0.8rem;"></i>
+                    <i class="far fa-heart text-muted" style="font-size: 0.8rem; cursor: pointer;"></i>
                 </div>
 
                 <div th:if="${post.comments.empty}" class="text-center text-muted py-5 small">
@@ -73,17 +105,23 @@
             <div class="split-footer">
                 <div class="d-flex justify-content-between fs-4 text-white mb-2">
                     <div class="d-flex gap-3">
-                        <i class="far fa-heart hover-neon"></i>
+                        <i th:id="'like-icon-' + ${post.id}"
+                           th:class="${post.likes.contains(currentUser)} ? 'fas fa-heart text-danger' : 'far fa-heart hover-neon'"
+                           th:onclick="'toggleLike(' + ${post.id} + ')'"
+                           style="cursor: pointer; transition: transform 0.2s;">
+                        </i>
                         <i class="far fa-comment hover-neon"></i>
                         <i class="far fa-paper-plane hover-neon"></i>
                     </div>
                     <i class="far fa-bookmark hover-neon"></i>
                 </div>
-                <div class="fw-bold text-white small mb-2">1,024 lượt thích</div>
+
+                <div class="fw-bold text-white small mb-2">
+                    <span th:id="'like-count-' + ${post.id}" th:text="${post.likes.size()}">0</span> lượt thích
+                </div>
                 <small class="text-muted text-uppercase d-block mb-3" style="font-size: 0.65rem;" th:text="${post.date}">NGÀY</small>
 
-                <form th:action="@{/comment/add}" method="post" class="d-flex align-items-center border-top border-secondary border-opacity-25 pt-3">
-                    <input type="hidden" name="postId" th:value="${post.id}">
+                <form th:action="@{/post/{id}/comment(id=${post.id})}" method="post" class="d-flex align-items-center border-top border-secondary border-opacity-25 pt-3">
                     <i class="far fa-smile text-white fs-4 me-3"></i>
                     <input type="text" name="content" class="form-control form-control-dark border-0 bg-transparent px-0 text-white small"
                            placeholder="Thêm bình luận..." required autocomplete="off" style="box-shadow: none;">
@@ -96,6 +134,44 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleLike(postId) {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        fetch('/api/post/' + postId + '/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Lỗi kết nối");
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const icon = document.getElementById('like-icon-' + postId);
+                    const count = document.getElementById('like-count-' + postId);
+
+                    count.innerText = data.likeCount;
+
+                    if (data.liked) {
+                        icon.className = 'fas fa-heart text-danger';
+                        icon.style.transform = "scale(1.2)";
+                        setTimeout(() => icon.style.transform = "scale(1)", 200);
+                    } else {
+                        icon.className = 'far fa-heart hover-neon';
+                    }
+                } else {
+                    window.location.href = "/login";
+                }
+            })
+            .catch(e => console.error(e));
+    }
+</script>
 
 </body>
 </html>

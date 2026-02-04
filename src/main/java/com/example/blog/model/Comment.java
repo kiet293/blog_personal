@@ -3,6 +3,9 @@ package com.example.blog.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -10,10 +13,11 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     @NotBlank(message = "Nội dung không được để trống")
     private String content;
 
-    private String date;
+    private LocalDateTime date = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -38,12 +42,6 @@ public class Comment {
     public void setContent(String content) {
         this.content = content;
     }
-    public String getDate() {
-        return date;
-    }
-    public void setDate(String date) {
-        this.date = date;
-    }
     public User getUser() {
         return user;
     }
@@ -55,5 +53,8 @@ public class Comment {
     }
     public void setPost(Post post) {
         this.post = post;
+    }
+    public String getDate() {
+        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 }
